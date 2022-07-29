@@ -285,3 +285,75 @@ HyperLogLog 提供不精确的去重计数。
 专门为消息队列设计的数据类型。
 支持消息的持久化、支持自动生成全局唯一 ID、支持 ack 确认消息的模式、支持消费组模式
 ```
+
+### 常见命令
+
+```
+-XADD ： 插入消息，有序，自动生成全局唯一ID
+-XLEN ： 查询消息长度
+-XREAD ： 读取消息，可以按ID读取
+-XDEL ： 根据ID删除消息
+-DEL ：删除整个Stream
+-XRANGE ： 读取区间消息
+-XREADGROUP ： 按消费组形式读取消息
+-XPENDING ： 查询每个消费组内所有消费者[已读取，未确认的消息]
+-XACK ： 向消息队列确认消息处理完成
+```
+
+###应用场景
+
+```
+消息队列
+    1. XADD -- XREAD (BLOCK 实现阻塞读)
+
+    2. XGROUP创建消费组，XREADGROUP消费组内的消费者读取消息
+        同一个消费组里的消费者不能消费同一条消息。
+        不同消费组的消费者可以消费同一条消息
+
+    3. 基于 Stream 实现的消息队列，如何保证消费者在发生故障或宕机再次重启后，仍然可以读取未处理完的消息？
+        XPENDING -- XACK
+        Streams 会自动使用内部队列（也称为 PENDING List）留存消费组里每个消费者读取的消息，
+        直到消费者使用 XACK 命令通知 Streams“消息已经处理完成”
+```
+
+<img title="" src="https://cdn.xiaolincoding.com/gh/xiaolincoder/redis/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4.png" alt="" width="474" data-align="center">
+
+### 与专业消息队列的差距
+
+```
+专业的需求：
+    -消息不丢
+    -消息可堆积
+
+1.Redis Stream消息会丢吗？
+    一个消息队列 = 生产者 + 队列中间件 + 消费者
+    生产者：异常处理合理，恰当重发消息就不会丢失
+    消费者：不会丢失
+    中间件：会丢失，
+            -AOF持久化是异步操作，宕机的时候存在数据丢失可能
+            -主从复制也是异步的，主从切换可能会丢
+2. Redis Stream 消息可堆积吗？
+    Stream有最大长度限制，超过限制删除就消息
+```
+
+![](https://cdn.xiaolincoding.com/gh/xiaolincoder/redis/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E4%B8%89%E4%B8%AA%E9%98%B6%E6%AE%B5.png)
+
+## 总结
+
+```
+常用基本类型：
+    String（字符串），Hash（哈希），List（列表），Set（集合）及 Zset(sorted set：有序集合)
+    底层有所改变
+应用场景：
+    String：缓存对象、常规计数、分布式锁、共享session信息
+    List ： 消息队列(1.自己实现全局唯一ID 2.没有消费组)
+    Hash ： 缓存对象，购物车
+    Set ： 聚合计算，点赞，共同关注，抽奖
+    Zset ： 排序场景；排行榜，电话姓名排序
+    BitMap ： 二值状态统计；签到，判断用户登录状态，连续签到用户总数
+    HyperLogLog ： 海量数据基数统计；百万级网页UV计数
+    GEO ： 存储地理位置信息
+    Stream ： 消息队列
+```
+
+![](https://img-blog.csdnimg.cn/img_convert/9fa26a74965efbf0f56b707a03bb9b7f.png)
