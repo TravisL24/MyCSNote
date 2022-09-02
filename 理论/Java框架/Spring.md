@@ -2,24 +2,22 @@
 
 ```
 主要支持模块：
-	1.IoC和AOP的容器
-	2.JDBC和ORM的数据访问模块
-	3.声明式事务的模块
-	4.基于Servlet的MVC开发
-	5.Reactive的Web开发
-	6.JMS、JavaMail、JMX、缓存等模块
+    1.IoC和AOP的容器
+    2.JDBC和ORM的数据访问模块
+    3.声明式事务的模块
+    4.基于Servlet的MVC开发
+    5.Reactive的Web开发
+    6.JMS、JavaMail、JMX、缓存等模块
 ```
-
-
 
 ## IoC容器
 
 ```
 -管理所有轻量级 JavaBean组件
 -提供底层服务
-	-组件生命周期管理、配置、组装
-	-AOP支持
-	-AOP为基础的声明式事务服务
+    -组件生命周期管理、配置、组装
+    -AOP支持
+    -AOP为基础的声明式事务服务
 ```
 
 ### 原理
@@ -30,9 +28,9 @@ inversion of Control ==> 控制反转
 
 ```
 核心需求：
-	1.谁来创建组件？
-	2.谁来根据依赖关系组装组件？
-	3.如何正确的按照顺序销毁组件？
+    1.谁来创建组件？
+    2.谁来根据依赖关系组装组件？
+    3.如何正确的按照顺序销毁组件？
 ```
 
 ```java
@@ -67,7 +65,7 @@ public class BookService {
 // 构造方法注入
 public class BookService {
     private DataSource dataSource;
-	
+
     // 构造的时候直接把需要的这个组件给放进去
     public BookService(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -75,19 +73,17 @@ public class BookService {
 }
 ```
 
-
-
 ### 装配Bean
 
 ```xml
 // <bean ...> id标识
 <bean id=" " class=" ">
-    
+
 // userService的Bean里面使用注入别的Bean
 <property name="..." ref="..." />
-        
+
 // 注入boolean、int、String这类的数据用 value 来做
-<property name=" " value=" " />	
+<property name=" " value=" " />    
 ```
 
 ```java
@@ -119,8 +115,6 @@ MailService mailService = factory.getBean(MailService.class);
 ApplicationContext是一次性创建所有的Bean
 BeanFactory是第一次获取这个Bean的时候才会去创建它
 ```
-
-
 
 ### Annotation配置
 
@@ -154,8 +148,6 @@ public class AppConfig {
     }
 }
 ```
-
-
 
 ### 定制Bean
 
@@ -239,8 +231,6 @@ public class AppConfig {
 }
 ```
 
-
-
 #### 初始化和销毁
 
 ```
@@ -291,8 +281,6 @@ public class MailService {
 或者定义的时候设置一个@Primary
 ```
 
-
-
 #### FactoryBean的使用
 
 ```java
@@ -315,8 +303,6 @@ public class ZoneIdFactoryBean implements FactoryBean<ZoneId> {
 }
 ```
 
-
-
 ### Resource的使用
 
 ```java
@@ -338,8 +324,6 @@ public class AppService {
     }
 }
 ```
-
-
 
 ### 注入配置
 
@@ -397,8 +381,6 @@ public class SmtpConfig {
 }
 ```
 
-
-
 ### 条件装配
 
 ```
@@ -407,13 +389,9 @@ public class SmtpConfig {
     @Profile("") 
 
 2.@Conditional决定是否创建这个Bean
-	@Component
-	@Conditional(OnSmtpEnvCondition.class)
+    @Component
+    @Conditional(OnSmtpEnvCondition.class)
 ```
-
-
-
-
 
 ## AOP
 
@@ -423,18 +401,18 @@ Aspect Oriented Programming，面向切面编程
 
 ```
 业务流程：
-	1.核心逻辑 Service
-	2.切面逻辑 Aspect
-	3.把Aspect以Proxy“织入”到Service
+    1.核心逻辑 Service
+    2.切面逻辑 Aspect
+    3.把Aspect以Proxy“织入”到Service
 ```
 
 ### 原理
 
 ```
 java平台的“织入”的方式
-	1.编译期，关键词aspect实现
-	2.类加载器，目标类被装载到JVM的时候，用类加载器做“增强”
-	3.运行期，目标对象和切面都是普通java类，JVM动态代理/第三方库“织入”
+    1.编译期，关键词aspect实现
+    2.类加载器，目标类被装载到JVM的时候，用类加载器做“增强”
+    3.运行期，目标对象和切面都是普通java类，JVM动态代理/第三方库“织入”
 ```
 
 ```
@@ -450,21 +428,21 @@ Spring的AOP实现==>基于JVM的动态代理
 
 ```
 相关概念：
-	Aspect: 切面，横跨多个核心逻辑的功能
-	Joinpoint: 连接点，应用程序流程什么地方执行插入切面
-	PointCut: 切入点，连接点的集合
-	Advice: 增强，特定连接点上的操作
-	Introduction: 引介，为一个现有Java对象动态增加新的接口
-	Weaving: 织入，切面整合到程序的执行流程中
-	Interceptor: 拦截器， 实现增强的一种方式
-	Target Object: 目标对象，真正执行业务的核心逻辑对象
-	AOP Proxy: AOP代理对象，客户端持有的增强后的对象引用
+    Aspect: 切面，横跨多个核心逻辑的功能
+    Joinpoint: 连接点，应用程序流程什么地方执行插入切面
+    PointCut: 切入点，连接点的集合
+    Advice: 增强，特定连接点上的操作
+    Introduction: 引介，为一个现有Java对象动态增加新的接口
+    Weaving: 织入，切面整合到程序的执行流程中
+    Interceptor: 拦截器， 实现增强的一种方式
+    Target Object: 目标对象，真正执行业务的核心逻辑对象
+    AOP Proxy: AOP代理对象，客户端持有的增强后的对象引用
 ```
 
 ```java
 // 分析：
-//		@Aspect注解表示这个类里面的方法需要注入到指定的位置
-//		@Component 这是个Bean
+//        @Aspect注解表示这个类里面的方法需要注入到指定的位置
+//        @Component 这是个Bean
 @Aspect
 @Component
 public class LoggingAspect {
@@ -524,8 +502,6 @@ public UserServiceAopProxy extends UserService {
 }
 ```
 
-
-
 #### AOP实际的使用
 
 ```
@@ -533,8 +509,6 @@ public UserServiceAopProxy extends UserService {
 2.标记@Compotent和@Aspect
 3.@Configuration类上标注@EnableAspectJAutoProxy
 ```
-
-
 
 #### 拦截器的类型
 
@@ -546,17 +520,15 @@ public UserServiceAopProxy extends UserService {
 @AfterReturning： 目标代码正常返回的时候，执行拦截器代码
 
 @AfterThrowing： 目标代码异常时，执行拦截器代码
- 
+
 @Around： 包含上面的全部
 ```
-
-
 
 ### 使用注解装配AOP
 
 ```
 // 被装配的Bean最好知道自己被安排了
-//		@Transactional： 数据库事务中调用的时候用到
+//        @Transactional： 数据库事务中调用的时候用到
 ```
 
 ```
@@ -602,8 +574,6 @@ public class MetricAspect {
 }
 ```
 
-
-
 ### 注意点
 
 ```
@@ -611,21 +581,19 @@ Spring通过CGLIB创建的代理类，不会初始化代理类自身继承的任
 ```
 
 ```
-方案：	
-	1.访问被注入的Bean时，总是调用方法而非直接访问字段；
-	2.编写Bean时，如果可能会被代理，就不要编写public final方法。
+方案：    
+    1.访问被注入的Bean时，总是调用方法而非直接访问字段；
+    2.编写Bean时，如果可能会被代理，就不要编写public final方法。
 ```
-
-
 
 ## 数据库访问
 
 ```
 Spring针对JDBC做了几件事情：
-	1.简化的JDBC模板，不需要手动释放资源
-	2.提供统一的DAO类来实现Data Access Object模式
-	3.SQLException封装成DataAccessException，是RuntimeException，可以区分SQL异常的原因
-	4.可以继承Hibernate、JPA、MyBatis这些框架
+    1.简化的JDBC模板，不需要手动释放资源
+    2.提供统一的DAO类来实现Data Access Object模式
+    3.SQLException封装成DataAccessException，是RuntimeException，可以区分SQL异常的原因
+    4.可以继承Hibernate、JPA、MyBatis这些框架
 ```
 
 ### JDBC的使用
@@ -634,11 +602,11 @@ Spring针对JDBC做了几件事情：
 
 ```
 JDBC的常规流程：
-	1.创建全局 DataSource 实例，表示数据库连接池
-	2.读写数据库的步骤：
-		-从 DataSource 获取 Connection 实例
-		-用 Connection 创建 PrepareStatement 实例
-		-执行SQL语句，查询=>ResultSet数据集，修改=>int结果
+    1.创建全局 DataSource 实例，表示数据库连接池
+    2.读写数据库的步骤：
+        -从 DataSource 获取 Connection 实例
+        -用 Connection 创建 PrepareStatement 实例
+        -执行SQL语句，查询=>ResultSet数据集，修改=>int结果
 
 关键在于 try...finally释放资源，涉及事务的代码需要正确提交或者回滚
 ```
@@ -647,8 +615,8 @@ JDBC的常规流程：
 
 ```
 Spring怎么做？
-	1.IoC容器去创建 DataSource 实例
-	2.有JdbcTemplate，可以直接实例化
+    1.IoC容器去创建 DataSource 实例
+    2.有JdbcTemplate，可以直接实例化
 ```
 
 ```java
@@ -701,20 +669,16 @@ jdbc.username=sa
 jdbc.password=
 ```
 
-
-
 #### JdbcTemplate用法
 
 ```
 查询： query(), queryForObject(); 
-	只要 sql,参数，RowMapper(把结果映射为JavaBean)
+    只要 sql,参数，RowMapper(把结果映射为JavaBean)
 更新：update();
-	sql,参数
+    sql,参数
 其他：excute(ConnectionCallback)
-	connection可以做所有JDBC操作
+    connection可以做所有JDBC操作
 ```
-
-
 
 ```java
 T execute(ConnectionCallback<T> action);
@@ -722,16 +686,14 @@ T execute(ConnectionCallback<T> action);
 T execute(String sql, PreparedStatementCallback<T> action);
 
 T queryForObject(String sql, Object[] args, RowMapper<T> rowMapper);
-	sql,sql参数,RowMapper是把 ResultSet当前行映射为JavaBean输出；
-	
+    sql,sql参数,RowMapper是把 ResultSet当前行映射为JavaBean输出；
+
 T query(String sql, Object[] args, RowMapper<T> rowMapper);
 
 T update();
 
 T insert(); // 遇到自增列的时候，用 KeyHolder 获取自增值
 ```
-
-
 
 ```java
 // T execute(ConnectionCallback<T> action) 使用案例
@@ -792,14 +754,12 @@ public User getUserByEmail(String email) {
 }
 ```
 
-
-
 ### 使用声明式事务
 
 ```
 Spring有操作事务的高级接口
-	PlatformTransactionManager： 事务管理器
-	TransactionStatus： 事务
+    PlatformTransactionManager： 事务管理器
+    TransactionStatus： 事务
 ```
 
 #### 常规事务操作
@@ -842,13 +802,11 @@ public class AppConfig {
 }
 ```
 
-
-
 #### 声明式事务！
 
 ```
 声明了@EnableTransactionManagement后，不必额外添加@EnableAspectJAutoProxy。
-	原因：AOP代理会自动创建Bean的代理实现
+    原因：AOP代理会自动创建Bean的代理实现
 ```
 
 ```java
@@ -872,8 +830,6 @@ public class UserService {
     }
 }
 ```
-
-
 
 #### 回滚事务
 
@@ -903,13 +859,13 @@ public buyProducts(long productId, int num) {
 有事务的时候，直接加入当前的事务
 
 传播级别：
-	REQUIRED: 常用
-	SUPPORTS：有事务就加入，没有就不开
-	MANDATORY：
-	REQUIRES_NEW: 直接开新的，旧的会挂起
-	NOT_SUPPORTED:
-	NEVER:
-	NESTED:
+    REQUIRED: 常用
+    SUPPORTS：有事务就加入，没有就不开
+    MANDATORY：
+    REQUIRES_NEW: 直接开新的，旧的会挂起
+    NOT_SUPPORTED:
+    NEVER:
+    NESTED:
 ```
 
 #### Spring使用事务
@@ -921,8 +877,6 @@ Connection 和 TransactionStatus 绑定到 ThreadLocal上
 ## 所以事务传播必须要在 一个线程内！！
 ```
 
-
-
 ### DAO使用
 
 ```
@@ -932,7 +886,7 @@ Connection 和 TransactionStatus 绑定到 ThreadLocal上
 ```java
 // Spring有JdbcDaoSupport类
 public abstract class JdbcDaoSupport extends DaoSupport {
-	
+
     // 核心就是这个template，但是没有AutoWired注解哦！
     private JdbcTemplate jdbcTemplate;
 
@@ -940,7 +894,7 @@ public abstract class JdbcDaoSupport extends DaoSupport {
         this.jdbcTemplate = jdbcTemplate;
         initTemplateConfig();
     }
-	
+
     // 直接调用jdbcTemplate实例
     public final JdbcTemplate getJdbcTemplate() {
         return this.jdbcTemplate;
@@ -963,25 +917,23 @@ public abstract class AbstractDao extends JdbcDaoSupport {
 }
 ```
 
-
-
 ### 集成Hibernate
 
 ```
 ORM (Object Relational Mapping) 的框架
-	目的： 数据库表记录 --> java对象
-	作用： 替代JdbcTemplate
-	实现步骤： 
-		1.Maven内引入JDBC驱动、连接池、Hibernate
-		2.AppConfig 创建DataSource、引入JDBC配置文件、启用声明式事务
-		3.AppConfig 创建 LocalSessionFactoryBean
+    目的： 数据库表记录 --> java对象
+    作用： 替代JdbcTemplate
+    实现步骤： 
+        1.Maven内引入JDBC驱动、连接池、Hibernate
+        2.AppConfig 创建DataSource、引入JDBC配置文件、启用声明式事务
+        3.AppConfig 创建 LocalSessionFactoryBean
 ```
 
 ```java
 // LocalSessionFactoryBean 会创建一个SessionFactory
 // Hibernate的 Session封装了 JDBC Connection实例
 // SessionFactory 封装的是 DataSource实例、持有连接池
-//		每次操作数据库就创建一个新的Session
+//        每次操作数据库就创建一个新的Session
 @Configuration
 @ComponentScan
 @EnableTransactionManagement
@@ -991,7 +943,7 @@ public class AppConfig {
     DataSource createDataSource() {
         ...
     }
-    
+
     @Bean
     LocalSessionFactoryBean createSessionFactory(@Autowired DataSource dataSource) {
         var props = new Properties();
@@ -1008,7 +960,7 @@ public class AppConfig {
         sessionFactoryBean.setHibernateProperties(props);
         return sessionFactoryBean;
     }
-    
+
     // 创建 HibernateTemplate 和 HibernateTransactionManager
     // HibernateTemplate 方便用工具类
     // HibernateTransactionManager 声明式事务
@@ -1026,22 +978,20 @@ public class AppConfig {
 
 ```
 常用注解：
-	@Entity ： JavaBean用于映射了
-	
-	@Table(name="表名") ： 对应实际表名
-	
-	@Id ： 主键
-	@GenerateValue ： 自增
-	@Column(nullable= , updatable= , length= ): 列，空？，可更新？，长度
-	
-	@MappedSuperclass ： 标注这是用于继承的抽象实体类
-	
-	@Transient ： 这个属性是计算的，不是数据库读取的
-	
-	@PrePersist ： 
+    @Entity ： JavaBean用于映射了
+
+    @Table(name="表名") ： 对应实际表名
+
+    @Id ： 主键
+    @GenerateValue ： 自增
+    @Column(nullable= , updatable= , length= ): 列，空？，可更新？，长度
+
+    @MappedSuperclass ： 标注这是用于继承的抽象实体类
+
+    @Transient ： 这个属性是计算的，不是数据库读取的
+
+    @PrePersist ： 
 ```
-
-
 
 #### CRUD的操作
 
@@ -1121,28 +1071,24 @@ List<User> list = (List<User>) hibernateTemplate.find("FROM User WHERE email=? A
 推荐使用Annotation配置所有的Entity Bean。
 ```
 
-
-
 ### JPA集成
 
 ```
 Java Persistence API
-	javax.persistence包
-	
+    javax.persistence包
+
 增删改方法：
-	persist()
-	remove()
-	merge()
+    persist()
+    remove()
+    merge()
 ```
 
 #### 不同接口对比
 
 | JDBC       | Hibernate      | JPA                  |
-| :--------- | :------------- | :------------------- |
+|:---------- |:-------------- |:-------------------- |
 | DataSource | SessionFactory | EntityManagerFactory |
 | Connection | Session        | EntityManager        |
-
-
 
 ### 集成MyBatis
 
@@ -1151,28 +1097,26 @@ DataSource(源) --> SqlSessionFactory(ORM的源) --> DataSourceTransactionManage
 ```
 
 | JDBC       | Hibernate      | JPA                  | MyBatis           |
-| :--------- | :------------- | :------------------- | :---------------- |
+|:---------- |:-------------- |:-------------------- |:----------------- |
 | DataSource | SessionFactory | EntityManagerFactory | SqlSessionFactory |
 | Connection | Session        | EntityManager        | SqlSession        |
-
-
 
 #### Mapper接口
 
 ```java
 // 类和表之间 用Mapper这个 ！接口！ 来实现映射
 public interface UserMapper {
-	@Select("SELECT * FROM users WHERE id = #{id}")
-	User getById(@Param("id") long id);
-    
+    @Select("SELECT * FROM users WHERE id = #{id}")
+    User getById(@Param("id") long id);
+
     @Insert("INSERT INTO users (email, password, name, createdAt) VALUES (#{user.email}, #{user.password}, #{user.name}, #{user.createdAt})")
-	void insert(@Param("user") User user);
+    void insert(@Param("user") User user);
 }
 ```
 
 ```java
 // MapperFactoryBean 自动创建所有Mapper的实现类
-//		用注解来启动
+//        用注解来启动
 @MapperScan("com.itranswarp.learnjava.mapper")
 ...其他注解...
 public class AppConfig {
@@ -1180,24 +1124,20 @@ public class AppConfig {
 }
 ```
 
-
-
 ## WEB开发
 
 ```
 1.Servlet规范定义了标准组件 : Servlet, JSP, Filter, Listener
-	Servlet：能处理HTTP请求并将HTTP响应返回
-	JSP：一种嵌套Java代码的HTML，将被编译为Servlet
-	Filter：能过滤指定的URL以实现拦截功能
-	Listener：监听指定的事件，如ServletContext、HttpSession的创建和销毁
+    Servlet：能处理HTTP请求并将HTTP响应返回
+    JSP：一种嵌套Java代码的HTML，将被编译为Servlet
+    Filter：能过滤指定的URL以实现拦截功能
+    Listener：监听指定的事件，如ServletContext、HttpSession的创建和销毁
 
 2.标准组件运行在Servlet容器中， Tomcat、 jetty、 WebLogic
 
 MVC框架的意义：
-	不需要接触Servlet API
+    不需要接触Servlet API
 ```
-
-
 
 ### Spring MVC 的使用
 
@@ -1207,8 +1147,6 @@ MVC框架的意义：
 Spring 提供一个 IoC 容器， 所有的Bean(包含Controller) 都在容器里被初始化
 Servlet容器由 JavaEE服务器提供(tomcat)
 ```
-
-
 
 #### Spring MVC 配置
 
@@ -1231,7 +1169,7 @@ public class AppConfig {
             }
         };
     }
-    
+
     // 2. 用什么模板引擎， 实例化什么 ViewResolver
     @Bean
     ViewResolver createViewResolver(@Autowired ServletContext servletContext) {
@@ -1250,21 +1188,19 @@ public class AppConfig {
 }
 ```
 
-
-
 #### 创建的相关问题
 
 ```
 1.Spring 容器 谁来创建？
-	解析：-Listener启动
-		 -Servlet启动
-		 -XML配置
-		 -注解配置
+    解析：-Listener启动
+         -Servlet启动
+         -XML配置
+         -注解配置
 
 2.什么时候创建？
-	解析：xml配置初始化DispatcherServlet后，会按照AppConfig配置初始化
+    解析：xml配置初始化DispatcherServlet后，会按照AppConfig配置初始化
 3.容器里的Controller是怎么通过Servlet调用的？
-	解析：通过ServletContext对象？不是很确定熬
+    解析：通过ServletContext对象？不是很确定熬
 ```
 
 问题1代码
@@ -1318,16 +1254,14 @@ public static void main(String[] args) throws Exception {
 }
 ```
 
-
-
 #### Controller的编写
 
 ```java
 // 1. @Controller 注解 不是@Compotent注解了
 
 // 2. @GetMapping / @PostMapping 表示 GET / POST请求
-//	  @RequestParam 表示需要接收的参数
-	@PostMapping("/signin")
+//      @RequestParam 表示需要接收的参数
+    @PostMapping("/signin")
     public ModelAndView doSignin(
             @RequestParam("email") String email,
             @RequestParam("password") String password,
@@ -1336,12 +1270,12 @@ public static void main(String[] args) throws Exception {
     }
 
 // 3. 返回值 包含View的路径+Map 作为Model
-	return new ModelAndView("signin.html"); // 仅View，没有Model
-	new ModelAndView("redirect:/signin"); // 重定向
-	return "redirect:/signin";
+    return new ModelAndView("signin.html"); // 仅View，没有Model
+    new ModelAndView("redirect:/signin"); // 重定向
+    return "redirect:/signin";
 
 // 4. Controller对URL可以分组，可以在Controller的class定义URL前缀
-	@Controller
+    @Controller
     @RequestMapping("/user")
     public class UserController {
         // 注意实际URL映射是/user/profile
@@ -1358,8 +1292,6 @@ public static void main(String[] args) throws Exception {
     }
 ```
 
-
-
 ### REST 的使用
 
 ```
@@ -1369,11 +1301,11 @@ public static void main(String[] args) throws Exception {
 ```java
 // 在Controller中可以直接处理JSON
 // @GetMapping / @PostMapping 可以指定输入输出的格式
-//	consumes：接受的类型
-//	produces：输出的类型
+//    consumes：接受的类型
+//    produces：输出的类型
 //  @ResponseBody：
-// 	返回的String不需要额外处理，直接作为输出内容写入HttpServletResponse
-// 	输入的JSON直接被反序列化位JavaBean
+//     返回的String不需要额外处理，直接作为输出内容写入HttpServletResponse
+//     输入的JSON直接被反序列化位JavaBean
 @PostMapping(value = "/rest",
              consumes = "application/json;charset=UTF-8",
              produces = "application/json;charset=UTF-8")
@@ -1425,14 +1357,12 @@ public class ApiController {
 // @JsonProperty(access = Access.WRITE_ONLY) 可以实现只进不出，注册的时候也不会被影响到了
 ```
 
-
-
 ### Filter的使用
 
 ```xml
 # 1.解决编码问题
-#	给全局范围类HttpServletRequest 和 HttpServletResponse强制设置编码
-#	或者设置一个Filter，在web.xml声明就ok
+#    给全局范围类HttpServletRequest 和 HttpServletResponse强制设置编码
+#    或者设置一个Filter，在web.xml声明就ok
 <web-app>
     <filter>
         <filter-name>encodingFilter</filter-name>
@@ -1457,8 +1387,8 @@ public class ApiController {
 
 ```xml
 # 2. AuthFilter作为Bean，Servlet容器不会识别。在web.xml中声明，就不会被Spring容器实例化，就没有@AutoWired的注入
-#	方案：Servlet容器实例化的Filter，间接引用Spring容器实例化的AuthFilter。
-#		Spring MVC里叫做 DelegatingFilterProxy
+#    方案：Servlet容器实例化的Filter，间接引用Spring容器实例化的AuthFilter。
+#        Spring MVC里叫做 DelegatingFilterProxy
 <web-app>
     <filter>
         <filter-name>authFilter</filter-name>
@@ -1480,8 +1410,6 @@ public class ApiController {
 
 ![image-20220428231522462](../../../../../A_Lab/Note/MD_Pic/image-20220428231522462.png)
 
-
-
 ### Interceptor的使用
 
 ```
@@ -1492,8 +1420,8 @@ Spring容器直接管理的
 ```java
 // 必须实现HandlerInterceptor接口
 // 选择实现 preHandle()： Controller执行前
-//		   postHanlder()： Controller正常返回后
-//		   afterHandler()： 无论有无异常，结束一定执行
+//           postHanlder()： Controller正常返回后
+//           afterHandler()： 无论有无异常，结束一定执行
 //================
 // 拦截器要生效，要在 WebMvcConfigurer里注册所有的Interceptor
 @Bean
@@ -1525,19 +1453,17 @@ public class UserController {
 }
 ```
 
-
-
 ### CORS的处理
 
 ```
 Cross-Origin Resource Sharing，处理跨域问题
-	1.@CorssOrigin：
-		在@RestController里定义，
-		# @CrossOrigin(origins = "http://local.liaoxuefeng.com:8080")
-	
-	2.CorsRegistry：
-		WebMvcConfigurer 中定义CORS配置
-		@Bean
+    1.@CorssOrigin：
+        在@RestController里定义，
+        # @CrossOrigin(origins = "http://local.liaoxuefeng.com:8080")
+
+    2.CorsRegistry：
+        WebMvcConfigurer 中定义CORS配置
+        @Bean
         WebMvcConfigurer createWebMvcConfigurer() {
             return new WebMvcConfigurer() {
                 @Override
@@ -1551,30 +1477,26 @@ Cross-Origin Resource Sharing，处理跨域问题
                 }
             };
         }
-	
-	3.CorsFilter：
-		Spring提供
+
+    3.CorsFilter：
+        Spring提供
 ```
-
-
 
 ### 国际化
 
 ```
 MessageFormat + Locale实现
-	1.获取Locale
-		按浏览器语言顺序，
-		Spring MVC有LocaleResolver从HttpServletRequest中获取Locale
-				CookieLocaleResolver从HttpServletRequest中获取Locale
-	2.提取资源文件
-		把写死在模板中的字符串以资源文件的方式存储在外部，.properties文件
-		
-	3.创建MessageSource
-		创建一个Spring提供的MessageSource实例，它自动读取所有的.properties文件
-		
+    1.获取Locale
+        按浏览器语言顺序，
+        Spring MVC有LocaleResolver从HttpServletRequest中获取Locale
+                CookieLocaleResolver从HttpServletRequest中获取Locale
+    2.提取资源文件
+        把写死在模板中的字符串以资源文件的方式存储在外部，.properties文件
+
+    3.创建MessageSource
+        创建一个Spring提供的MessageSource实例，它自动读取所有的.properties文件
+
 ```
-
-
 
 ### 异步处理
 
@@ -1591,8 +1513,6 @@ Controller编写async逻辑
     法二：返回一个DeferredResult对象，在另一个线程里处理
 ```
 
-
-
 ### WebSocket使用
 
 ```
@@ -1601,21 +1521,18 @@ Controller编写async逻辑
 
 ```
 1.创建一个WebSocketConfigurer实例
-	实例在内部通过WebSocketHandlerRegistry注册能处理WebSocket的WebSocketHandler以及可选的WebSocket拦截器HandshakeInterceptor
+    实例在内部通过WebSocketHandlerRegistry注册能处理WebSocket的WebSocketHandler以及可选的WebSocket拦截器HandshakeInterceptor
 ```
-
-
 
 ## 第三方组件
 
 ```
 可以集成JavaMail发送邮件；
-	核心是定义一个JavaMailSender的Bean，然后调用其send()方法。
-	
+    核心是定义一个JavaMailSender的Bean，然后调用其send()方法。
+
 可以集成JMS消息服务；
-	可以通过JMS服务器实现消息的异步处理。
-	消息服务主要解决Producer和Consumer生产和处理速度不匹配的问题
+    可以通过JMS服务器实现消息的异步处理。
+    消息服务主要解决Producer和Consumer生产和处理速度不匹配的问题
 可以集成Quartz实现定时任务；
 可以集成Redis等服务。
 ```
-

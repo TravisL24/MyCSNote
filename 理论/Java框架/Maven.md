@@ -23,18 +23,16 @@ Maven 会根据当前申明需要的包，自动导入其他前置的包
 
 ### 依赖关系
 
-| scope    | 说明                                          | 示例            |
-| :------- | :-------------------------------------------- | :-------------- |
-| compile  | 编译时需要用到该jar包（默认）                 | commons-logging |
-| test     | 编译Test时需要用到该jar包                     | junit           |
-| runtime  | 编译时不需要，但运行时需要用到                | mysql           |
+| scope    | 说明                       | 示例              |
+|:-------- |:------------------------ |:--------------- |
+| compile  | 编译时需要用到该jar包（默认）         | commons-logging |
+| test     | 编译Test时需要用到该jar包         | junit           |
+| runtime  | 编译时不需要，但运行时需要用到          | mysql           |
 | provided | 编译时需要用到，但运行时由JDK或某个服务器提供 | servlet-api     |
 
 ```
 compile类型的依赖会被直接放入classpath
 ```
-
-
 
 ## 构建流程
 
@@ -45,18 +43,18 @@ compile类型的依赖会被直接放入classpath
 mvn + phase maven会根据生命周期运行到指定的phase
 也可以多个 phase配合使用
 常见指令：
-	mvn clean: 清理所有生成的class和jar
-	mvn clean compile: 先清理后执行到compile
-	mvn clean test:  先清理后执行到test
-	mvn clean package: 先清理再执行到package
+    mvn clean: 清理所有生成的class和jar
+    mvn clean compile: 先清理后执行到compile
+    mvn clean test:  先清理后执行到test
+    mvn clean package: 先清理再执行到package
 ```
 
 ### Goal
 
-| 执行的Phase | 对应执行的Goal                     |
-| :---------- | :--------------------------------- |
-| compile     | compiler:compile                   |
-| test        | compiler:testCompile surefire:test |
+| 执行的Phase | 对应执行的Goal                          |
+|:-------- |:---------------------------------- |
+| compile  | compiler:compile                   |
+| test     | compiler:testCompile surefire:test |
 
 ```
 lifecycle ==> java的package，包含一个或者多个phase
@@ -64,16 +62,12 @@ phase ==> java的class，包含一个或者多个goal
 goal ==> java的method，真正做事的
 ```
 
-
-
 ## 使用插件 (plugin)
 
 ```
 goal是最小的任务执行单元
 执行phase，都是通过某个插件(plugin)执行的，插件回去执行对应的goal
 ```
-
-
 
 ## 模块管理
 
@@ -99,8 +93,6 @@ multiple-project
 // 每个模块都可以从parent直接继承
 ```
 
-
-
 ## 使用mvnw
 
 ```
@@ -122,9 +114,6 @@ my-project
     └── test
         ├── java
         └── resources
-        
+
 // mvnw、mvnw.cmd、.mvn提交到库之中可以统一版本
 ```
-
-
-
